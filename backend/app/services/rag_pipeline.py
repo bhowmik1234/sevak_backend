@@ -14,7 +14,7 @@ def generate_answer(query: str, user_history: list = []):
 
     # Reterive chunk from vector database
     # retrieved_chunks = retrieve_similar_chunks(query)
-    context = "\n\n".join(retrieved_chunks)
+    # context = "\n\n".join(retrieved_chunks)
 
     # print("context here->",context)
     # Chat Prompt
