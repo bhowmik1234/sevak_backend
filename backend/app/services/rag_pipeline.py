@@ -4,7 +4,7 @@ import os
 
 # Env config
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
-model = genai.GenerativeModel(os.getenv("GOOGLE_AI_MODEL_NAME"))
+model = genai.GenerativeModel("models/gemini-1.5-flash")
 
 # Generate Response
 def generate_answer(query: str, user_history: list = []):
