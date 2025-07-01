@@ -55,55 +55,55 @@
 
 # ****************************************************** Qdrant DB ****************************************************************
 
-import os
-from sentence_transformers import SentenceTransformer
-from qdrant_client import QdrantClient
-from qdrant_client.models import VectorParams, Distance, PointStruct
+# import os
+# from sentence_transformers import SentenceTransformer
+# from qdrant_client import QdrantClient
+# from qdrant_client.models import VectorParams, Distance, PointStruct
 
-# Load embedding model
-model = SentenceTransformer(os.getenv("EMBEDDINGS_MODEL", "BAAI/bge-small-en-v1.5"))
+# # Load embedding model
+# model = SentenceTransformer(os.getenv("EMBEDDINGS_MODEL", "BAAI/bge-small-en-v1.5"))
 
-# Connect to Qdrant (local server)
-# qdrant_client = QdrantClient(host="localhost", port=6333)
+# # Connect to Qdrant (local server)
+# # qdrant_client = QdrantClient(host="localhost", port=6333)
 
-# use this in case of cloud database
-qdrant_client = QdrantClient(
-    url=os.getenv("QDRANT_CLUSTER_URL"),
-    api_key=os.getenv("QDRANT_API_KEY")
-)
+# # use this in case of cloud database
+# qdrant_client = QdrantClient(
+#     url=os.getenv("QDRANT_CLUSTER_URL"),
+#     api_key=os.getenv("QDRANT_API_KEY")
+# )
 
 
-# Define collection name and vector size
-COLLECTION_NAME = "pdf_chunks"
-VECTOR_SIZE = model.get_sentence_embedding_dimension()
+# # Define collection name and vector size
+# COLLECTION_NAME = "pdf_chunks"
+# VECTOR_SIZE = model.get_sentence_embedding_dimension()
 
-# Create collection if it doesn't exist
-qdrant_client.recreate_collection(
-    collection_name=COLLECTION_NAME,
-    vectors_config=VectorParams(size=VECTOR_SIZE, distance=Distance.COSINE)
-)
+# # Create collection if it doesn't exist
+# qdrant_client.recreate_collection(
+#     collection_name=COLLECTION_NAME,
+#     vectors_config=VectorParams(size=VECTOR_SIZE, distance=Distance.COSINE)
+# )
 
-# Store text chunks
-def store_chunks_in_vector_db(chunks: list):
-    inputs = [f"passage: {chunk}" for chunk in chunks]
-    embeddings = model.encode(inputs, normalize_embeddings=True).tolist()
+# # Store text chunks
+# def store_chunks_in_vector_db(chunks: list):
+#     inputs = [f"passage: {chunk}" for chunk in chunks]
+#     embeddings = model.encode(inputs, normalize_embeddings=True).tolist()
 
-    points = [
-        PointStruct(id=i, vector=embeddings[i], payload={"text": chunks[i]})
-        for i in range(len(chunks))
-    ]
+#     points = [
+#         PointStruct(id=i, vector=embeddings[i], payload={"text": chunks[i]})
+#         for i in range(len(chunks))
+#     ]
 
-    qdrant_client.upsert(collection_name=COLLECTION_NAME, points=points)
+#     qdrant_client.upsert(collection_name=COLLECTION_NAME, points=points)
 
-# Retrieve similar chunks
-def retrieve_similar_chunks(query: str, k=5):
-    query_embedding = model.encode([f"query: {query}"], normalize_embeddings=True).tolist()[0]
+# # Retrieve similar chunks
+# def retrieve_similar_chunks(query: str, k=5):
+#     query_embedding = model.encode([f"query: {query}"], normalize_embeddings=True).tolist()[0]
 
-    results = qdrant_client.search(
-        collection_name=COLLECTION_NAME,
-        query_vector=query_embedding,
-        limit=k,
-        with_payload=True
-    )
+#     results = qdrant_client.search(
+#         collection_name=COLLECTION_NAME,
+#         query_vector=query_embedding,
+#         limit=k,
+#         with_payload=True
+#     )
 
-    return [hit.payload["text"] for hit in results]
+#     return [hit.payload["text"] for hit in results]
