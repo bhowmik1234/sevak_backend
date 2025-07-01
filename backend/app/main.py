@@ -6,6 +6,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from fastapi.middleware.cors import CORSMiddleware
 import os
+import subprocess
 
 origins = [
     os.getenv("FRONTEND_URL"),
@@ -35,6 +36,11 @@ app.include_router(auth.router, prefix="/auth", tags=["Auth"])
 
 @app.on_event("startup")
 async def startup():
+    try:
+        print("⚙️ Fetching Prisma engine at runtime...")
+        subprocess.run(["python", "-m", "prisma", "py", "fetch"], check=True)
+    except Exception as e:
+        print("❌ Failed to fetch Prisma binary:", e)
     await prisma.connect()
     # Define a proper async task for deletion
     async def scheduled_cleanup():
