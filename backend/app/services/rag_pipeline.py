@@ -1,6 +1,6 @@
 import google.generativeai as genai
 import os
-from app.services.vector_store import retrieve_similar_chunks
+# from app.services.vector_store import retrieve_similar_chunks
 
 # Env config
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
@@ -13,10 +13,10 @@ def generate_answer(query: str, user_history: list = []):
     '''
 
     # Reterive chunk from vector database
-    retrieved_chunks = retrieve_similar_chunks(query)
+    # retrieved_chunks = retrieve_similar_chunks(query)
     context = "\n\n".join(retrieved_chunks)
 
-    print("context here->",context)
+    # print("context here->",context)
     # Chat Prompt
     chat_prompt = f"""
         You are an advanced, empathetic, and responsible AI Legal Assistant trained in Indian law (IPC, CrPC, Constitution, civil and criminal codes, 
@@ -43,7 +43,7 @@ def generate_answer(query: str, user_history: list = []):
             Give answer in points, and use nextline also
             always give me in this formate only.
 
-            {context}
+            
             {query}       
 
 """
