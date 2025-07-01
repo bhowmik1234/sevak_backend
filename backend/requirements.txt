@@ -5,11 +5,8 @@ sqlalchemy
 psycopg2-binary
 prisma
 pydantic
-openai
 requests
 google-generativeai
-chromadb
-PyPDF2
 qdrant-client
 
 sentence-transformers
